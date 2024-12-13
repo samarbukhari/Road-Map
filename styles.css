@@ -4,6 +4,8 @@
     --accent-color: #ff69b4;
     --text-color: #4a4a4a;
     --background-color: #fff5f6;
+    --gradient-1: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    --gradient-2: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
 }
 
 * {
@@ -14,23 +16,45 @@
 
 body {
     font-family: 'Quicksand', sans-serif;
-    background-color: var(--background-color);
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(255, 183, 197, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 40%, rgba(255, 105, 180, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 30% 80%, rgba(255, 209, 220, 0.1) 0%, transparent 15%),
+        var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 .container {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 20px;
+    position: relative;
+    animation: fadeInUp 1s ease-out;
 }
 
 h1 {
     text-align: center;
     color: var(--accent-color);
-    margin-bottom: 3rem;
-    font-size: 2.5rem;
+    margin: 3rem 0 4rem;
+    font-size: 2.8rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 3px;
+    background: var(--gradient-1);
+    border-radius: 2px;
 }
 
 .roadmap {
@@ -71,22 +95,42 @@ h1 {
 }
 
 .phase-content {
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 2px rgba(255, 255, 255, 1),
+        0 0 0 4px rgba(255, 183, 197, 0.3);
     width: calc(50% - 50px);
     position: relative;
     margin-left: auto;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    background: linear-gradient(white, white) padding-box,
-                linear-gradient(45deg, var(--primary-color), var(--accent-color)) border-box;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.phase-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.phase-content:hover::before {
+    opacity: 1;
 }
 
 .phase-content:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 0 0 2px rgba(255, 255, 255, 1),
+        0 0 0 4px rgba(255, 105, 180, 0.4);
 }
 
 .phase:nth-child(odd) .phase-content {
@@ -124,6 +168,7 @@ h1 {
                       radial-gradient(circle at 50% 50%, var(--secondary-color) 8px, transparent 8px);
     top: 50%;
     transform: translateY(-50%);
+    filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.4));
 }
 
 .phase:nth-child(odd) .blossom-decoration {
@@ -145,9 +190,14 @@ ul {
 }
 
 li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     position: relative;
-    padding-left: 1.5rem;
+    padding-left: 1.8rem;
+    transition: transform 0.2s ease;
+}
+
+li:hover {
+    transform: translateX(5px);
 }
 
 li::before {
@@ -155,6 +205,12 @@ li::before {
     position: absolute;
     left: 0;
     color: var(--primary-color);
+    transition: transform 0.2s ease;
+}
+
+li:hover::before {
+    transform: rotate(45deg);
+    color: var(--accent-color);
 }
 
 .rotating-logo {
@@ -206,12 +262,34 @@ footer {
 .footer-content {
     position: relative;
     z-index: 1;
+    padding: 1.5rem 0;
 }
 
 .signature {
-    color: var(--accent-color);
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
+    position: relative;
+    padding: 0 5px;
+}
+
+.signature::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gradient-1);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.signature:hover::after {
+    transform: scaleX(1);
 }
 
 .footer-blossoms {
@@ -247,14 +325,109 @@ footer {
     50% { opacity: 1; }
 }
 
-@media (max-width: 768px) {
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--gradient-1);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    z-index: 1000;
+}
+
+/* Responsive Design */
+/* Large Devices (Desktops) */
+@media screen and (max-width: 1200px) {
+    .container {
+        max-width: 960px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Medium Devices (Tablets) */
+@media screen and (max-width: 992px) {
+    .container {
+        max-width: 720px;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+        margin: 2rem 0 3rem;
+    }
+
+    .phase-content {
+        width: calc(100% - 80px);
+        margin-left: 80px !important;
+    }
+
     .roadmap::before {
-        left: 30px;
+        left: 40px;
+    }
+
+    .phase-content::before {
+        left: -55px !important;
+    }
+
+    .blossom-decoration {
+        left: -70px !important;
+        width: 35px;
+        height: 35px;
+    }
+
+    .floating-blossoms .blossom {
+        display: none;
+    }
+    
+    .floating-blossoms .blossom:nth-child(-n+4) {
+        display: block;
+    }
+}
+
+/* Small Devices (Landscape Phones) */
+@media screen and (max-width: 768px) {
+    .container {
+        max-width: 540px;
+        padding: 0 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin: 1.5rem 0 2.5rem;
+    }
+
+    h1::after {
+        width: 120px;
+    }
+
+    .phase {
+        margin-bottom: 2.5rem;
     }
 
     .phase-content {
         width: calc(100% - 60px);
         margin-left: 60px !important;
+        padding: 1.5rem;
+    }
+
+    .roadmap::before {
+        left: 30px;
+        width: 4px;
     }
 
     .phase-content::before {
@@ -263,6 +436,8 @@ footer {
 
     .blossom-decoration {
         left: -55px !important;
+        width: 30px;
+        height: 30px;
     }
 
     .rotating-logo {
@@ -273,5 +448,213 @@ footer {
     .blossom-logo {
         width: 40px;
         height: 40px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    li {
+        font-size: 0.95rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .footer-content {
+        padding: 1rem 0;
+    }
+
+    .signature {
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Extra Small Devices (Portrait Phones) */
+@media screen and (max-width: 576px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin: 1.2rem 0 2rem;
+    }
+
+    h1::after {
+        width: 100px;
+    }
+
+    .phase {
+        margin-bottom: 2rem;
+    }
+
+    .phase-content {
+        width: calc(100% - 45px);
+        margin-left: 45px !important;
+        padding: 1.2rem;
+    }
+
+    .roadmap::before {
+        left: 22px;
+        width: 3px;
+    }
+
+    .phase-content::before {
+        left: -35px !important;
+        width: 15px;
+        height: 15px;
+    }
+
+    .blossom-decoration {
+        left: -45px !important;
+        width: 25px;
+        height: 25px;
+    }
+
+    .rotating-logo {
+        top: 8px;
+        left: 8px;
+    }
+
+    .blossom-logo {
+        width: 35px;
+        height: 35px;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    li {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+    }
+
+    .footer-content {
+        padding: 0.8rem 0;
+        font-size: 0.9rem;
+    }
+
+    .footer-blossoms {
+        height: 20px;
+    }
+
+    .footer-blossom {
+        width: 12px;
+        height: 12px;
+    }
+
+    .scroll-progress {
+        height: 2px;
+    }
+}
+
+/* Landscape Mode Fixes */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .container {
+        margin: 1rem auto;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .phase {
+        margin-bottom: 1.5rem;
+    }
+
+    .phase-content {
+        padding: 1rem;
+    }
+
+    .rotating-logo {
+        display: none;
+    }
+
+    .floating-blossoms {
+        display: none;
+    }
+
+    footer {
+        margin-top: 2rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #f0f0f0;
+        --background-color: #1a1a1a;
+    }
+
+    body {
+        background: 
+            radial-gradient(circle at 10% 20%, rgba(255, 183, 197, 0.05) 0%, transparent 20%),
+            radial-gradient(circle at 90% 40%, rgba(255, 105, 180, 0.05) 0%, transparent 25%),
+            radial-gradient(circle at 30% 80%, rgba(255, 209, 220, 0.05) 0%, transparent 15%),
+            var(--background-color);
+    }
+
+    .phase-content {
+        background: rgba(26, 26, 26, 0.95);
+        box-shadow: 
+            0 4px 15px rgba(0, 0, 0, 0.2),
+            0 0 0 2px rgba(255, 255, 255, 0.1),
+            0 0 0 4px rgba(255, 183, 197, 0.2);
+    }
+
+    .phase-content:hover {
+        box-shadow: 
+            0 8px 25px rgba(0, 0, 0, 0.25),
+            0 0 0 2px rgba(255, 255, 255, 0.15),
+            0 0 0 4px rgba(255, 105, 180, 0.3);
+    }
+
+    footer {
+        background: linear-gradient(to right, rgba(26, 26, 26, 0.8), rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0.8));
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #ff0066;
+        --accent-color: #ff0066;
+        --text-color: #000000;
+        --background-color: #ffffff;
+    }
+
+    .phase-content {
+        border: 2px solid var(--primary-color);
+    }
+
+    .roadmap::before {
+        background: var(--primary-color);
+    }
+
+    h1::after {
+        background: var(--primary-color);
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .floating-blossoms {
+        display: none;
+    }
+
+    .phase-content:hover {
+        transform: none;
+    }
+
+    .scroll-progress {
+        display: none;
     }
 }
